@@ -1,6 +1,7 @@
 from enum import Enum
 import random
 from datetime import datetime, timedelta
+import time
 
 class Difficulty(Enum):
     EASY = 1
@@ -63,10 +64,22 @@ def run_game():
             game = Difficulty(2)
         case "HARD":
             game = Difficulty(3)
-    length = timedelta(seconds=120)
+        case _:
+            print("INVALID DIFFICULTY LEVEL")
+            run_game()
+    
+    print("3...")
+    time.sleep(1)
+    print("2...")
+    time.sleep(1)
+    print("1...")
+    time.sleep(1)
+    
     start = datetime.today()
+    length = timedelta(seconds=120)
     score = 0
     wrong = []
+    
     while datetime.today() - start >= length:
         q, a = generate_q_a(game)
         print(f"{q}\n")
@@ -79,6 +92,7 @@ def run_game():
                 "correct": a,
                 "your": ans
             })
+    
     print(f"\nYOU SCORED: {score} POINTS!")
     if len(wrong) != 0:
         print(f"\nYOU MADE {len(wrong)} MISTAKES:")
