@@ -99,7 +99,7 @@ def run_game():
     path_to_db = f"./data/{game.name}_db.csv"
     with open(path_to_db, "a") as db:
         db.write(f"{user},{start},{score},{len(wrong)}\n")
-        leaderboard = pd.read_csv(path_to_db)
+    leaderboard = pd.read_csv(path_to_db)
 
     print(f"\nYOU SCORED: {score} POINTS!")
     if len(wrong) != 0:
@@ -108,7 +108,7 @@ def run_game():
             print(f"\n\tQUESTION: {mistake['q']}")
             print(f"\tCORRECT ANSWER: {mistake['correct']}")
             print(f"\tYOUR ANSWER: {mistake['your']}")
-
-    print(leaderboard)
+        
+    print(f"\n{leaderboard}")
     
 run_game()
