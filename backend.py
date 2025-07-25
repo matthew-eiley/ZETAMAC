@@ -2,6 +2,7 @@ from enum import Enum
 import random
 from datetime import datetime, timedelta
 import time
+import pandas as pd
 
 class Difficulty(Enum):
     EASY = 1
@@ -95,8 +96,10 @@ def run_game():
                 "your": ans
             })
     
-    with open(f"./{game.name}_db.csv", "a") as db:
+    path_to_db = f"./data/{game.name}_db.csv"
+    with open(path_to_db, "a") as db:
         db.write(f"{user},{start},{score},{len(wrong)}\n")
+        leaderboard = pd.read_csv(path_to_db)
 
     print(f"\nYOU SCORED: {score} POINTS!")
     if len(wrong) != 0:
@@ -106,4 +109,6 @@ def run_game():
             print(f"\tCORRECT ANSWER: {mistake['correct']}")
             print(f"\tYOUR ANSWER: {mistake['your']}")
 
+    print(leaderboard)
+    
 run_game()
