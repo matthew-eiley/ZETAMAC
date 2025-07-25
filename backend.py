@@ -56,7 +56,7 @@ def generate_q_a(game):
             return q, int(a)
 
 def run_game():
-    # user = input("ENTER YOUR NAME: ")
+    user = input("ENTER YOUR NAME: ")
     diff = input("ENTER A DIFFICULTY LEVEL (easy, medium, hard): ")
     match diff.upper():
         case "EASY":
@@ -95,6 +95,9 @@ def run_game():
                 "your": ans
             })
     
+    with open(f"./{game.name}_db.csv", "a") as db:
+        db.write(f"{user},{start},{score},{len(wrong)}\n")
+
     print(f"\nYOU SCORED: {score} POINTS!")
     if len(wrong) != 0:
         print(f"\nYOU MADE {len(wrong)} MISTAKES:")
