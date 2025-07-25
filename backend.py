@@ -67,17 +67,14 @@ def make_leaderboard(path_to_db):
     for _, group in grouped:
         group_size = len(group)
         if group_size == 1:
-            # Unique rank
             rankings.extend([str(current_rank)])
         else:
-            # Tie rank, use T prefix
             rankings.extend([f'T{current_rank}'] * group_size)
-        current_rank += group_size  # Skip ahead by group size
+        current_rank += group_size
 
     df['ranking'] = rankings
     cols = ['ranking'] + [col for col in df.columns if col != 'ranking']
-    df = df[cols]
-    return df
+    return df[cols]
 
 def run_game():
     user = input("ENTER YOUR NAME: ")
