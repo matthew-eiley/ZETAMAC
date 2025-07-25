@@ -56,6 +56,29 @@ def generate_q_a(game):
             a = x / y
             return q, int(a)
 
+def make_leaderboard(path_to_db):
+    df = pd.read_csv(path_to_db, parse_dates=['datetime'])
+    df = df.sort_values(by='datetime', ascending=False).head(100)
+    df = df.sort_values(by=['score', 'mistakes'], ascending=[False, True]).reset_index(drop=True)
+
+    grouped = df.groupby(['score', 'mistakes'], sort=False)
+    rankings = []
+    current_rank = 1
+    for _, group in grouped:
+        group_size = len(group)
+        if group_size == 1:
+            # Unique rank
+            rankings.extend([str(current_rank)])
+        else:
+            # Tie rank, use T prefix
+            rankings.extend([f'T{current_rank}'] * group_size)
+        current_rank += group_size  # Skip ahead by group size
+
+    df['ranking'] = rankings
+    cols = ['ranking'] + [col for col in df.columns if col != 'ranking']
+    df = df[cols]
+    return df
+
 def run_game():
     user = input("ENTER YOUR NAME: ")
     diff = input("ENTER A DIFFICULTY LEVEL (easy, medium, hard): ")
@@ -99,7 +122,7 @@ def run_game():
     path_to_db = f"./data/{game.name}_db.csv"
     with open(path_to_db, "a") as db:
         db.write(f"{user},{start},{score},{len(wrong)}\n")
-    leaderboard = pd.read_csv(path_to_db)
+    leaderboard = make_leaderboard(path_to_db)
 
     print(f"\nYOU SCORED: {score} POINTS!")
     if len(wrong) != 0:
