@@ -56,8 +56,9 @@ def generate_q_a(game):
             return q, int(a)
 
 def run_game():
-    diff = input("Input a difficulty (EASY, MEDIUM, HARD): ")
-    match diff:
+    # user = input("ENTER YOUR NAME: ")
+    diff = input("ENTER A DIFFICULTY LEVEL (easy, medium, hard): ")
+    match diff.upper():
         case "EASY":
             game = Difficulty(1)
         case "MEDIUM":
@@ -80,12 +81,13 @@ def run_game():
     score = 0
     wrong = []
     
-    while datetime.today() - start >= length:
+    while datetime.today() - start < length:
         q, a = generate_q_a(game)
-        print(f"{q}\n")
+        print(f"\n{q}")
         ans = int(input())
         if ans == a:
-            score += 1
+            if datetime.today() - start < length: # to make sure they didn't take too long to answer
+                score += 1
         else:
             wrong.append({
                 "q": q,
