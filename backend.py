@@ -20,13 +20,13 @@ def generate_q_a(game):
     match game:
         case Difficulty.EASY:
             add_sub = [1, 25]
-            mult_div_spec = [1, 10]
+            mult_div_spec = [1, 12]
         case Difficulty.MEDIUM:
             add_sub = [1, 50]
-            mult_div_spec = [1, 15]
+            mult_div_spec = [1, 18]
         case Difficulty.HARD:
             add_sub = [1, 100]
-            mult_div_spec = [1, 20]
+            mult_div_spec = [1, 24]
     
     operation_code = random.randint(1, 4)
     operation = Operation(operation_code)
@@ -57,11 +57,11 @@ def generate_q_a(game):
             return q, int(a)
 
 def make_leaderboard(path_to_db):
-    df = pd.read_csv(path_to_db, parse_dates=['datetime'])
-    df = df.sort_values(by='datetime', ascending=False).head(100)
-    df = df.sort_values(by=['score', 'mistakes'], ascending=[False, True]).reset_index(drop=True)
+    df = pd.read_csv(path_to_db, parse_dates=['Date'])
+    df = df.sort_values(by='Date', ascending=False).head(100)
+    df = df.sort_values(by=['Correct', 'Mistakes'], ascending=[False, True]).reset_index(drop=True)
 
-    grouped = df.groupby(['score', 'mistakes'], sort=False)
+    grouped = df.groupby(['Correct', 'Mistakes'], sort=False)
     rankings = []
     current_rank = 1
     for _, group in grouped:
@@ -72,63 +72,63 @@ def make_leaderboard(path_to_db):
             rankings.extend([f'T{current_rank}'] * group_size)
         current_rank += group_size
 
-    df['ranking'] = rankings
-    cols = ['ranking'] + [col for col in df.columns if col != 'ranking']
+    df['Rank'] = rankings
+    cols = ['Rank'] + [col for col in df.columns if col != 'Rank']
     return df[cols]
 
-def run_game():
-    user = input("ENTER YOUR NAME: ")
-    diff = input("ENTER A DIFFICULTY LEVEL (easy, medium, hard): ")
-    match diff.upper():
-        case "EASY":
-            game = Difficulty(1)
-        case "MEDIUM":
-            game = Difficulty(2)
-        case "HARD":
-            game = Difficulty(3)
-        case _:
-            print("INVALID DIFFICULTY LEVEL")
-            run_game()
+# def run_game():
+#     user = input("ENTER YOUR NAME: ")
+#     diff = input("ENTER A DIFFICULTY LEVEL (easy, medium, hard): ")
+#     match diff.upper():
+#         case "EASY":
+#             game = Difficulty(1)
+#         case "MEDIUM":
+#             game = Difficulty(2)
+#         case "HARD":
+#             game = Difficulty(3)
+#         case _:
+#             print("INVALID DIFFICULTY LEVEL")
+#             run_game()
     
-    print("3...")
-    time.sleep(1)
-    print("2...")
-    time.sleep(1)
-    print("1...")
-    time.sleep(1)
+#     print("3...")
+#     time.sleep(1)
+#     print("2...")
+#     time.sleep(1)
+#     print("1...")
+#     time.sleep(1)
     
-    start = datetime.today()
-    length = timedelta(seconds=120)
-    score = 0
-    wrong = []
+#     start = datetime.today()
+#     length = timedelta(seconds=120)
+#     score = 0
+#     wrong = []
     
-    while datetime.today() - start < length:
-        q, a = generate_q_a(game)
-        print(f"\n{q}")
-        ans = int(input())
-        if ans == a:
-            if datetime.today() - start < length: # to make sure they didn't take too long to answer
-                score += 1
-        else:
-            wrong.append({
-                "q": q,
-                "correct": a,
-                "your": ans
-            })
+#     while datetime.today() - start < length:
+#         q, a = generate_q_a(game)
+#         print(f"\n{q}")
+#         ans = int(input())
+#         if ans == a:
+#             if datetime.today() - start < length: # to make sure they didn't take too long to answer
+#                 score += 1
+#         else:
+#             wrong.append({
+#                 "q": q,
+#                 "correct": a,
+#                 "your": ans
+#             })
     
-    path_to_db = f"./data/{game.name}_db.csv"
-    with open(path_to_db, "a") as db:
-        db.write(f"{user},{start},{score},{len(wrong)}\n")
-    leaderboard = make_leaderboard(path_to_db)
+#     path_to_db = f"./data/{game.name}_db.csv"
+#     with open(path_to_db, "a") as db:
+#         db.write(f"{user},{start},{score},{len(wrong)}\n")
+#     leaderboard = make_leaderboard(path_to_db)
 
-    print(f"\nYOU SCORED: {score} POINTS!")
-    if len(wrong) != 0:
-        print(f"\nYOU MADE {len(wrong)} MISTAKES:")
-        for mistake in wrong:
-            print(f"\n\tQUESTION: {mistake['q']}")
-            print(f"\tCORRECT ANSWER: {mistake['correct']}")
-            print(f"\tYOUR ANSWER: {mistake['your']}")
+#     print(f"\nYOU SCORED: {score} POINTS!")
+#     if len(wrong) != 0:
+#         print(f"\nYOU MADE {len(wrong)} MISTAKES:")
+#         for mistake in wrong:
+#             print(f"\n\tQUESTION: {mistake['q']}")
+#             print(f"\tCORRECT ANSWER: {mistake['correct']}")
+#             print(f"\tYOUR ANSWER: {mistake['your']}")
         
-    print(f"\n{leaderboard}")
+#     print(f"\n{leaderboard}")
     
-run_game()
+# run_game()
